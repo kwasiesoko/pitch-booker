@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  
+  --color-brand-primary: #065f46;
+  --color-brand-secondary: #bef264;
+  --color-brand-dark: #0f172a;
+  --color-brand-accent: #fbbf24;
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #020617;
+    --foreground: #f8fafc;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #bef264 0%, #065f46 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.button-primary {
+  @apply bg-brand-primary text-white px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/20;
+}
+
+.button-secondary {
+  @apply bg-brand-secondary text-brand-dark px-6 py-3 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-lime-500/20;
+}

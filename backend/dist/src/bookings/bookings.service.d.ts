@@ -1,0 +1,85 @@
+import { PrismaService } from '../prisma/prisma.service';
+interface BulkBookingItem {
+    startTime: string;
+    duration?: number;
+}
+interface BulkBookingPayload {
+    pitchId: string;
+    name: string;
+    phone: string;
+    email?: string;
+    date: string;
+    slots: BulkBookingItem[];
+    paymentReference?: string;
+}
+export declare class BookingsService {
+    private prisma;
+    constructor(prisma: PrismaService);
+    create(data: Record<string, unknown>): Promise<{
+        id: string;
+        email: string | null;
+        phone: string;
+        createdAt: Date;
+        name: string;
+        pitchId: string;
+        date: Date;
+        startTime: string;
+        paymentReference: string | null;
+        endTime: string;
+        status: import("@prisma/client").$Enums.BookingStatus;
+    }>;
+    bulkCreate(data: BulkBookingPayload): Promise<{
+        id: string;
+        email: string | null;
+        phone: string;
+        createdAt: Date;
+        name: string;
+        pitchId: string;
+        date: Date;
+        startTime: string;
+        paymentReference: string | null;
+        endTime: string;
+        status: import("@prisma/client").$Enums.BookingStatus;
+    }[]>;
+    findAllForOwner(ownerId: string): Promise<({
+        pitch: {
+            id: string;
+            createdAt: Date;
+            name: string;
+            ownerId: string;
+            location: string;
+            pricePerHour: number;
+            openingTime: string;
+            closingTime: string;
+            facilities: string[];
+            imageUrl: string | null;
+            isVerified: boolean;
+        };
+    } & {
+        id: string;
+        email: string | null;
+        phone: string;
+        createdAt: Date;
+        name: string;
+        pitchId: string;
+        date: Date;
+        startTime: string;
+        paymentReference: string | null;
+        endTime: string;
+        status: import("@prisma/client").$Enums.BookingStatus;
+    })[]>;
+    updateStatus(ownerId: string, bookingId: string, status: 'CONFIRMED' | 'PENDING' | 'CANCELLED'): Promise<{
+        id: string;
+        email: string | null;
+        phone: string;
+        createdAt: Date;
+        name: string;
+        pitchId: string;
+        date: Date;
+        startTime: string;
+        paymentReference: string | null;
+        endTime: string;
+        status: import("@prisma/client").$Enums.BookingStatus;
+    }>;
+}
+export {};

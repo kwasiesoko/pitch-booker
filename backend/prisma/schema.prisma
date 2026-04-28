@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  phone     String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  pitches   Pitch[]
+}
+
+model Pitch {
+  id           String    @id @default(uuid())
+  ownerId      String
+  name         String
+  location     String
+  pricePerHour Float
+  openingTime  String
+  closingTime  String
+  imageUrl     String?
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  facilities   String[]
+  bookings     Booking[]
+  reviews      Review[]
+  payments     Payment[]
+  owner        User      @relation(fields: [ownerId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  pitchId   String
+  name      String
+  rating    Int      @default(5)
+  comment   String?
+  createdAt DateTime @default(now())
+  pitch     Pitch    @relation(fields: [pitchId], references: [id])
+}
+
+model Booking {
+  id               String        @id @default(uuid())
+  pitchId          String
+  name             String
+  phone            String
+  email            String?
+  paymentReference String?
+  date             DateTime
+  startTime        String
+  endTime          String
+  status           BookingStatus @default(CONFIRMED)
+  createdAt        DateTime      @default(now())
+  pitch            Pitch         @relation(fields: [pitchId], references: [id])
+  payment          Payment?      @relation(fields: [paymentReference], references: [reference])
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  reference String        @unique
+  amount    Float
+  email     String
+  phone     String?
+  name      String?
+  pitchId   String
+  date      String
+  slots     Json
+  status    PaymentStatus @default(PENDING)
+  meta      Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  bookings  Booking[]
+  pitch     Pitch         @relation(fields: [pitchId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
