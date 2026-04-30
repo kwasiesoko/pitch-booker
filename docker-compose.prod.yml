@@ -17,6 +17,19 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:8.2-m01-alpine
+    restart: unless-stopped
+    volumes:
+      - ./pitch_booker_data/redis:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     image: reg-aml.esoko.com/deveops-test.img/pitch-booker-backend:alpha
     restart: unless-stopped
@@ -28,10 +41,14 @@ services:
       PORT:                 3004
       PAYSTACK_PUBLIC_KEY:  ${PAYSTACK_PUBLIC_KEY}
       PAYSTACK_SECRET_KEY:  ${PAYSTACK_SECRET_KEY}
+      REDIS_HOST:           redis
+      REDIS_PORT:           6379
     expose:
       - "3004"
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
