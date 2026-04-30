@@ -3,7 +3,7 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ARG NEXT_PUBLIC_API_URL=https://api.pitch-booker.elicitlabs.link
+ARG NEXT_PUBLIC_API_URL=https://api.turfwars.elicitlabs.link
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 COPY frontend/package*.json ./
