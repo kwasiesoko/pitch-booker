@@ -52,7 +52,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pitch-booker-api.rule=Host(`api.pitch-booker.elicitlabs.link`)"
+      - "traefik.http.routers.pitch-booker-api.rule=Host(`api.turfwars.elicitlabs.link`)"
       - "traefik.http.routers.pitch-booker-api.entrypoints=websecure"
       - "traefik.http.routers.pitch-booker-api.tls.certresolver=myresolver"
       - "traefik.http.services.pitch-booker-api.loadbalancer.server.port=3004"
@@ -78,7 +78,7 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pitch-booker-web.rule=Host(`pitch-booker.elicitlabs.link`)"
+      - "traefik.http.routers.pitch-booker-web.rule=Host(`turfwars.elicitlabs.link`)"
       - "traefik.http.routers.pitch-booker-web.entrypoints=websecure"
       - "traefik.http.routers.pitch-booker-web.tls.certresolver=myresolver"
       - "traefik.http.services.pitch-booker-web.loadbalancer.server.port=3005"
