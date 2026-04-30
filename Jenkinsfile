@@ -11,8 +11,8 @@ pipeline {
         registry_URL        = "reg-aml.esoko.com"
 
         // Dev images
-        IMAGE_BACKEND       = "reg-aml.esoko.com/develop.esoko/pitch-booker-backend"
-        IMAGE_WEB           = "reg-aml.esoko.com/develop.esoko/pitch-booker-web"
+        IMAGE_BACKEND       = "reg-aml.esoko.com/deveops-test.img/pitch-booker-backend"
+        IMAGE_WEB           = "reg-aml.esoko.com/deveops-test.img/pitch-booker-web"
         TAG                 = "alpha"
 
         // Prod images
