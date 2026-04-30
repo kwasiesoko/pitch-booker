@@ -35,6 +35,6 @@ RUN mkdir -p prisma/migrations \
 
 USER nestjs
 
-EXPOSE 3000
+EXPOSE 3004
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
