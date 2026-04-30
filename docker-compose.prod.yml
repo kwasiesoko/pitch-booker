@@ -39,6 +39,7 @@ services:
       - "traefik.http.routers.pitch-booker-api.entrypoints=websecure"
       - "traefik.http.routers.pitch-booker-api.tls.certresolver=myresolver"
       - "traefik.http.services.pitch-booker-api.loadbalancer.server.port=3004"
+      - "traefik.docker.network=proxy"
       - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - proxy
