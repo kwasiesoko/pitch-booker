@@ -25,11 +25,11 @@ services:
       DATABASE_URL:         postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
       JWT_SECRET:           ${JWT_SECRET}
       CORS_ORIGIN:          https://pitch-booker.elicitlabs.link
-      PORT:                 3000
+      PORT:                 3004
       PAYSTACK_PUBLIC_KEY:  ${PAYSTACK_PUBLIC_KEY}
       PAYSTACK_SECRET_KEY:  ${PAYSTACK_SECRET_KEY}
     expose:
-      - "3000"
+      - "3004"
     depends_on:
       db:
         condition: service_healthy
@@ -38,13 +38,13 @@ services:
       - "traefik.http.routers.pitch-booker-api.rule=Host(`api.pitch-booker.elicitlabs.link`)"
       - "traefik.http.routers.pitch-booker-api.entrypoints=websecure"
       - "traefik.http.routers.pitch-booker-api.tls.certresolver=myresolver"
-      - "traefik.http.services.pitch-booker-api.loadbalancer.server.port=3000"
+      - "traefik.http.services.pitch-booker-api.loadbalancer.server.port=3004"
       - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - proxy
       - internal
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3004/ || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -54,7 +54,7 @@ services:
     image: reg-aml.esoko.com/deveops-test.img/pitch-booker-web:alpha
     restart: unless-stopped
     expose:
-      - "3000"
+      - "3005"
     depends_on:
       backend:
         condition: service_healthy
@@ -63,7 +63,7 @@ services:
       - "traefik.http.routers.pitch-booker-web.rule=Host(`pitch-booker.elicitlabs.link`)"
       - "traefik.http.routers.pitch-booker-web.entrypoints=websecure"
       - "traefik.http.routers.pitch-booker-web.tls.certresolver=myresolver"
-      - "traefik.http.services.pitch-booker-web.loadbalancer.server.port=3000"
+      - "traefik.http.services.pitch-booker-web.loadbalancer.server.port=3005"
       - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - proxy
