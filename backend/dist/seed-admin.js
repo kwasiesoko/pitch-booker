@@ -38,7 +38,7 @@ const bcrypt = __importStar(require("bcryptjs"));
 async function seed() {
     const prisma = new client_1.PrismaClient();
     const email = 'quacinyadi@yahoo.com';
-    const password = 'school@12';
+    const password = '12345678';
     const hash = await bcrypt.hash(password, 10);
     const user = await prisma.user.upsert({
         where: { email },

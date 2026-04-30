@@ -3,18 +3,40 @@ const { PrismaClient } = require('@prisma/client');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
 
+const bcrypt = require('bcryptjs');
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // Create admin user
+  const adminEmail = 'quacinyadi@yahoo.com';
+  const adminPassword = '12345678';
+  const adminHash = await bcrypt.hash(adminPassword, 10);
+
+  await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: {
+      password: adminHash,
+      role: 'ADMIN',
+    },
+    create: {
+      email: adminEmail,
+      password: adminHash,
+      role: 'ADMIN',
+    },
+  });
+
+  console.log('Admin user seeded:', adminEmail);
+
   // Create a default pitch owner
   const owner = await prisma.user.upsert({
     where: { email: 'owner@pitchbooker.com' },
     update: {},
     create: {
       email: 'owner@pitchbooker.com',
-      password: 'hashedpassword', // fake password for MVP
+      password: await bcrypt.hash('password123', 10),
     },
   });
 
