@@ -7,7 +7,7 @@ ARG NEXT_PUBLIC_API_URL=https://api.pitch-booker.elicitlabs.link
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 COPY frontend/ ./
 RUN npm run build
