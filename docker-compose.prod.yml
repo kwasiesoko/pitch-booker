@@ -1,0 +1,75 @@
+services:
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB}
+    volumes:
+      - ./pitch_booker_data/postgres:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: reg-aml.esoko.com/deveops-test.img/pitch-booker-backend:alpha
+    restart: unless-stopped
+    environment:
+      NODE_ENV:             production
+      DATABASE_URL:         postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET:           ${JWT_SECRET}
+      CORS_ORIGIN:          https://pitch-booker.elicitlabs.link
+      PORT:                 3000
+      PAYSTACK_PUBLIC_KEY:  ${PAYSTACK_PUBLIC_KEY}
+      PAYSTACK_SECRET_KEY:  ${PAYSTACK_SECRET_KEY}
+    expose:
+      - "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pitch-booker-api.rule=Host(`api.pitch-booker.elicitlabs.link`)"
+      - "traefik.http.routers.pitch-booker-api.entrypoints=websecure"
+      - "traefik.http.routers.pitch-booker-api.tls.certresolver=myresolver"
+      - "traefik.http.services.pitch-booker-api.loadbalancer.server.port=3000"
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - proxy
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  web:
+    image: reg-aml.esoko.com/deveops-test.img/pitch-booker-web:alpha
+    restart: unless-stopped
+    expose:
+      - "3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pitch-booker-web.rule=Host(`pitch-booker.elicitlabs.link`)"
+      - "traefik.http.routers.pitch-booker-web.entrypoints=websecure"
+      - "traefik.http.routers.pitch-booker-web.tls.certresolver=myresolver"
+      - "traefik.http.services.pitch-booker-web.loadbalancer.server.port=3000"
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+  internal:
+    driver: bridge
