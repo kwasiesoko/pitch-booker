@@ -14,7 +14,7 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {},
-  output: 'standalone',
+  output: 'standalone' as const,
 };
 
 export default withPWA(nextConfig);
